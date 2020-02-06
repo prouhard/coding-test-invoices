@@ -19,8 +19,8 @@ class InvoiceStats:
     # Maximum number of invoices to be stored
     _MAX_INVOICES: int = 20_000_000
 
-    # Maximum allowed value for an invoice
-    _MAX_INVOICE_VALUE: int = 200_000_000
+    # Maximum allowed amount for an invoice
+    _MAX_INVOICE_AMOUNT: int = 200_000_000
 
     # Instance-level storage of the added invoices.
     _invoices: List[Invoice]
@@ -43,8 +43,8 @@ class InvoiceStats:
             - `invoices`: a list of invoices
 
         Examples:
-            - [10.20, 10_000]
-            - [500.00]
+            - [(10, 20), (10, 0)]
+            - [(500, 0)]
         """
 
         for invoice in invoices:
@@ -52,14 +52,14 @@ class InvoiceStats:
 
     def add_invoice(self, invoice: Invoice) -> None:
         """
-        Add a single invoice, in dollars and cents
+        Add a single invoice, a tuple of dollars and cents
 
         Arguments:
             - `invoice`: an invoice
 
         Examples:
-            - 10.20
-            - 10_000
+            - (10, 20)
+            - (10_000, 0)
         """
 
         self._raise_for_max_invoices_reached()
@@ -136,20 +136,20 @@ class InvoiceStats:
             - less than the maximum value (`TooLargeInvoiceError`)
         """
 
-        # Check that invoice is a valid number
+        # Check that invoice amounts are valid integers
         if not all(isinstance(amount, int) for amount in invoice):
             raise NotAnIntegerInvoiceError
 
-        # Check that invoice is positive
+        # Check that the total invoice is positive
         if (
             any(amount < 0 for amount in invoice) or
             all(amount == 0 for amount in invoice)
         ):
             raise NonPositiveInvoiceError
 
-        # Check that invoice is less than the maximum allowed value
-        if invoice[0] >= self._MAX_INVOICE_VALUE and invoice[1] > 0:
-            raise TooLargeInvoiceError(self._MAX_INVOICE_VALUE)
+        # Check that the total invoice is less than the maximum allowed value
+        if invoice[0] >= self._MAX_INVOICE_AMOUNT and invoice[1] > 0:
+            raise TooLargeInvoiceError(self._MAX_INVOICE_AMOUNT)
 
     @staticmethod
     def _truncate_to_two_decimals(number: float) -> float:

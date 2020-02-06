@@ -35,7 +35,7 @@ class TestInvoiceStats(unittest.TestCase):
         """
         It should raise a `NotAnIntegerInvoiceError` error.
         """
-        nan_invoice = (float('nan'), 0)
+        nan_invoice = (1.1, 0)
         invoice_stats = InvoiceStats()
 
         with self.assertRaises(NotAnIntegerInvoiceError):
