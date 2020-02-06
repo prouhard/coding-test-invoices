@@ -73,52 +73,52 @@ class TestInvoiceStats(unittest.TestCase):
 
         self.assertListEqual(invoice_stats._invoices, invoices)
 
-    # def test_get_median_rounded_down(self):
-    #     """
-    #     It should compute the median of the added invoices.
-    #     Half a cent should round down.
-    #     Here, the raw median is 5.115, so `get_median` should return 5.11.
-    #     """
-    #     invoices = [1.23, 3.45, 6.78, 7.89]
-    #     invoice_stats = InvoiceStats()
-    #     invoice_stats.add_invoices(invoices)
-    #     median = invoice_stats.get_median()
+    def test_get_median_rounded_down(self):
+        """
+        It should compute the median of the added invoices.
+        Half a cent should round down.
+        Here, the raw median is 5.115, so `get_median` should return 5.11.
+        """
+        invoices = [(1, 23), (3, 45), (6, 78), (7, 89)]
+        invoice_stats = InvoiceStats()
+        invoice_stats.add_invoices(invoices)
+        median = invoice_stats.get_median()
 
-    #     self.assertEqual(median, 5.11)
+        self.assertEqual(median, 5.11)
 
-    # def test_get_mean_rounded_down(self):
-    #     """
-    #     It should compute the mean of the added invoices.
-    #     Half a cent should round down.
-    #     Here, the raw mean is 4.835, so `get_mean` should return 4.83.
-    #     """
-    #     invoices = [1.23, 3.45, 6.78, 7.88]
-    #     invoice_stats = InvoiceStats()
-    #     invoice_stats.add_invoices(invoices)
-    #     mean = invoice_stats.get_mean()
+    def test_get_mean_rounded_down(self):
+        """
+        It should compute the mean of the added invoices.
+        Half a cent should round down.
+        Here, the raw mean is 4.835, so `get_mean` should return 4.83.
+        """
+        invoices = [(1, 23), (3, 45), (6, 78), (7, 88)]
+        invoice_stats = InvoiceStats()
+        invoice_stats.add_invoices(invoices)
+        mean = invoice_stats.get_mean()
 
-    #     self.assertEqual(mean, 4.83)
+        self.assertEqual(mean, 4.83)
 
-    # def test_get_median_not_rounded(self):
-    #     """
-    #     It should compute the median of the added invoices.
-    #     Here, the raw median is 4.56, so `get_median` should return 4.56.
-    #     """
-    #     invoices = [1.23, 3.45, 4.56, 6.78, 7.89]
-    #     invoice_stats = InvoiceStats()
-    #     invoice_stats.add_invoices(invoices)
-    #     median = invoice_stats.get_median()
+    def test_get_median_not_rounded(self):
+        """
+        It should compute the median of the added invoices.
+        Here, the raw median is 4.56, so `get_median` should return 4.56.
+        """
+        invoices = [(1, 23), (3, 45), (4, 56), (6, 78), (7, 89)]
+        invoice_stats = InvoiceStats()
+        invoice_stats.add_invoices(invoices)
+        median = invoice_stats.get_median()
 
-    #     self.assertEqual(median, 4.56)
+        self.assertEqual(median, 4.56)
 
-    # def test_get_mean_rounded_up(self):
-    #     """
-    #     It should compute the mean of the added invoices.
-    #     Here, the raw mean is 4.8375, so `get_mean` should return 4.84.
-    #     """
-    #     invoices = [1.23, 3.45, 6.78, 7.89]
-    #     invoice_stats = InvoiceStats()
-    #     invoice_stats.add_invoices(invoices)
-    #     mean = invoice_stats.get_mean()
+    def test_get_mean_rounded_up(self):
+        """
+        It should compute the mean of the added invoices.
+        Here, the raw mean is 4.8375, so `get_mean` should return 4.84.
+        """
+        invoices = [(1, 23), (3, 45), (6, 78), (7, 89)]
+        invoice_stats = InvoiceStats()
+        invoice_stats.add_invoices(invoices)
+        mean = invoice_stats.get_mean()
 
-    #     self.assertEqual(mean, 4.84)
+        self.assertEqual(mean, 4.84)

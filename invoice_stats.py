@@ -82,7 +82,12 @@ class InvoiceStats:
         Half a cent should round down.
         """
 
-        raw_median = median(self._invoices)
+        raw_median = median(
+            (
+                dollars + cents / 100
+                for dollars, cents in self._invoices
+            )
+        )
 
         # If `raw_median` has more than 2 decimals, it is the mean
         # of 2 invoices, which have at most 2 decimals each, so
@@ -96,7 +101,12 @@ class InvoiceStats:
         Half a cent should round down.
         """
 
-        raw_mean = mean(self._invoices)
+        raw_mean = mean(
+            (
+                dollars + cents / 100
+                for dollars, cents in self._invoices
+            )
+        )
         truncated_mean = self._truncate_to_two_decimals(raw_mean)
 
         # Check if we are in the first half of the cent
