@@ -152,12 +152,12 @@ class InvoiceStats:
             raise TooLargeInvoiceError(self._MAX_INVOICE_VALUE)
 
     @staticmethod
-    def _truncate_to_two_decimals(invoice: Invoice) -> float:
+    def _truncate_to_two_decimals(number: float) -> float:
         """
-        Truncates the incoming invoice to two decimals
+        Truncates the incoming number to two decimals
 
         Argument:
-            - `invoice`: the invoice to truncate
+            - `number`: the number to truncate
 
         Examples:
             - 23.456 -> 23.45
@@ -165,4 +165,4 @@ class InvoiceStats:
             - 23 -> 23
         """
 
-        return math.floor(invoice * 100) / 100
+        return math.floor(number * 100) / 100
