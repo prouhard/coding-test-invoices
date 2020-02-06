@@ -1,15 +1,17 @@
 from statistics import mean, median
-from typing import List
+from typing import List, Tuple
 
 import math
 
 from errors import (
-    InvalidAmountInvoiceError,
     MaximumNumberOfInvoicesReached,
     NonPositiveInvoiceError,
-    NotANumberInvoiceError,
+    NotAnIntegerInvoiceError,
     TooLargeInvoiceError,
 )
+
+# User-defined Invoice type as a tuple of (dollars, cents)
+Invoice = Tuple[int, int]
 
 
 class InvoiceStats:
@@ -18,10 +20,10 @@ class InvoiceStats:
     _MAX_INVOICES: int = 20_000_000
 
     # Maximum allowed value for an invoice
-    _MAX_INVOICE_VALUE: float = 200_000_000.0
+    _MAX_INVOICE_VALUE: int = 200_000_000
 
     # Instance-level storage of the added invoices.
-    _invoices: List[float]
+    _invoices: List[Invoice]
 
     # Tracking of the storage's length to avoid computing it
     # each time an invoice is added
@@ -33,7 +35,7 @@ class InvoiceStats:
         """
         self.clear()
 
-    def add_invoices(self, invoices: List[float]) -> None:
+    def add_invoices(self, invoices: List[Invoice]) -> None:
         """
         Add a list of invoices, in dollars and cents
 
@@ -48,7 +50,7 @@ class InvoiceStats:
         for invoice in invoices:
             self.add_invoice(invoice)
 
-    def add_invoice(self, invoice: float) -> None:
+    def add_invoice(self, invoice: Invoice) -> None:
         """
         Add a single invoice, in dollars and cents
 
@@ -116,33 +118,31 @@ class InvoiceStats:
         if self._current_invoices_size >= self._MAX_INVOICES:
             raise MaximumNumberOfInvoicesReached(self._MAX_INVOICES)
 
-    def _raise_for_invalid_invoice(self, invoice: float) -> None:
+    def _raise_for_invalid_invoice(self, invoice: Invoice) -> None:
         """
-        Check that the invoice amount is (or raise):
-            - a valid number (`NotANumberInvoiceError`)
+        Check that the invoice amounts in dollars and cents are (or raise):
+            - valid integers (`NotAnIntegerInvoiceError`)
             - nonnegative (`InvalidAmountInvoiceError`)
-            - at most a 2-decimals float (`NonPositiveInvoiceError`)
             - less than the maximum value (`TooLargeInvoiceError`)
         """
 
         # Check that invoice is a valid number
-        if not isinstance(invoice, (int, float)) or not math.isfinite(invoice):
-            raise NotANumberInvoiceError
+        if not all(isinstance(amount, int) for amount in invoice):
+            raise NotAnIntegerInvoiceError
 
         # Check that invoice is positive
-        if invoice <= 0.0:
+        if (
+            any(amount < 0 for amount in invoice) or
+            all(amount == 0 for amount in invoice)
+        ):
             raise NonPositiveInvoiceError
 
-        # Check that invoice is at most a 2-decimals float
-        if self._truncate_to_two_decimals(invoice) != invoice:
-            raise InvalidAmountInvoiceError
-
         # Check that invoice is less than the maximum allowed value
-        if invoice >= self._MAX_INVOICE_VALUE:
+        if invoice[0] >= self._MAX_INVOICE_VALUE and invoice[1] > 0:
             raise TooLargeInvoiceError(self._MAX_INVOICE_VALUE)
 
     @staticmethod
-    def _truncate_to_two_decimals(invoice: float) -> float:
+    def _truncate_to_two_decimals(invoice: Invoice) -> float:
         """
         Truncates the incoming invoice to two decimals
 

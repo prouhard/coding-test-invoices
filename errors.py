@@ -22,7 +22,9 @@ class NonPositiveInvoiceError(InvalidInvoiceError):
     Raised when an invoice is not positive.
     """
     def __init__(self):
-        super().__init__("Invoices must be positive numbers.")
+        super().__init__(
+            "Invoices amounts in dollar and cents must be positive numbers."
+        )
 
 
 class TooLargeInvoiceError(InvalidInvoiceError):
@@ -33,20 +35,11 @@ class TooLargeInvoiceError(InvalidInvoiceError):
         super().__init__(f"Invoices must be less than {max_invoice_value}.")
 
 
-class InvalidAmountInvoiceError(InvalidInvoiceError):
+class NotAnIntegerInvoiceError(InvalidInvoiceError):
     """
-    Raised when an invoice is not a whole number of dollars and cents,
-    ie: invoices must be at most 2-decimals floats
+    Raised when an invoice amount is not a valid integer.
     """
     def __init__(self):
         super().__init__(
-            "Invoices amounts must be a whole number of dollars and cents."
+            f"Invoices amounts in dollars and cents must be valid integers."
         )
-
-
-class NotANumberInvoiceError(InvalidInvoiceError):
-    """
-    Raised when an invoice is not a valid number.
-    """
-    def __init__(self):
-        super().__init__(f"Invoices must be valid numbers.")
