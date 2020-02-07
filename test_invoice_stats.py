@@ -19,14 +19,14 @@ class TestInvoiceStats(unittest.TestCase):
 
     def test_add_invoice_float_raise_invalid_invoice_error(self):
         """
-        Invoice's dollars is not an integer.
+        Invoice's dollars amount is not an integer.
         It should raise a `InvalidInvoiceError` error.
         """
-        nan_invoice = Invoice(1.1, 0)
+        float_invoice = Invoice(1.1, 0)
         invoice_stats = InvoiceStats()
 
         with self.assertRaises(InvalidInvoiceError) as context:
-            invoice_stats.add_invoice(nan_invoice)
+            invoice_stats.add_invoice(float_invoice)
 
         self.assertEqual(context.exception.code, 1)
 
