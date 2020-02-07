@@ -1,26 +1,16 @@
-from statistics import mean, median
-from typing import List, Tuple
+from typing import List
 
 import math
+import statistics
 
-from errors import (
-    MaximumNumberOfInvoicesReached,
-    NonPositiveInvoiceError,
-    NotAnIntegerInvoiceError,
-    TooLargeInvoiceError,
-)
-
-# User-defined Invoice type as a tuple of (dollars, cents)
-Invoice = Tuple[int, int]
+from errors import MaximumNumberOfInvoicesReached
+from invoice import Invoice
 
 
 class InvoiceStats:
 
     # Maximum number of invoices to be stored
     _MAX_INVOICES: int = 20_000_000
-
-    # Maximum allowed amount for an invoice
-    _MAX_INVOICE_AMOUNT: int = 200_000_000
 
     # Instance-level storage of the added invoices.
     _invoices: List[Invoice]
@@ -43,8 +33,8 @@ class InvoiceStats:
             - `invoices`: a list of invoices
 
         Examples:
-            - [(10, 20), (10, 0)]
-            - [(500, 0)]
+            - [Invoice(10, 20), Invoice(10, 0)]
+            - [Invoice(500, 0)]
         """
 
         for invoice in invoices:
@@ -58,12 +48,13 @@ class InvoiceStats:
             - `invoice`: an invoice
 
         Examples:
-            - (10, 20)
-            - (10_000, 0)
+            - Invoice(dollars=10_000, cents=0)
+            - Invoice(10, 20)
         """
 
         self._raise_for_max_invoices_reached()
-        self._raise_for_invalid_invoice(invoice)
+        invoice.raise_for_invalid_amounts()
+
         self._invoices.append(invoice)
         self._current_invoices_size += 1
 
@@ -82,10 +73,10 @@ class InvoiceStats:
         Half a cent should round down.
         """
 
-        raw_median = median(
+        raw_median = statistics.median(
             (
-                dollars + cents / 100
-                for dollars, cents in self._invoices
+                invoice.as_amount()
+                for invoice in self._invoices
             )
         )
 
@@ -101,10 +92,10 @@ class InvoiceStats:
         Half a cent should round down.
         """
 
-        raw_mean = mean(
+        raw_mean = statistics.mean(
             (
-                dollars + cents / 100
-                for dollars, cents in self._invoices
+                invoice.as_amount()
+                for invoice in self._invoices
             )
         )
         truncated_mean = self._truncate_to_two_decimals(raw_mean)
@@ -127,29 +118,6 @@ class InvoiceStats:
 
         if self._current_invoices_size >= self._MAX_INVOICES:
             raise MaximumNumberOfInvoicesReached(self._MAX_INVOICES)
-
-    def _raise_for_invalid_invoice(self, invoice: Invoice) -> None:
-        """
-        Check that the invoice amounts in dollars and cents are (or raise):
-            - valid integers (`NotAnIntegerInvoiceError`)
-            - nonnegative (`InvalidAmountInvoiceError`)
-            - less than the maximum value (`TooLargeInvoiceError`)
-        """
-
-        # Check that invoice amounts are valid integers
-        if not all(isinstance(amount, int) for amount in invoice):
-            raise NotAnIntegerInvoiceError
-
-        # Check that the total invoice is positive
-        if (
-            any(amount < 0 for amount in invoice) or
-            all(amount == 0 for amount in invoice)
-        ):
-            raise NonPositiveInvoiceError
-
-        # Check that the total invoice is less than the maximum allowed value
-        if invoice[0] >= self._MAX_INVOICE_AMOUNT and invoice[1] > 0:
-            raise TooLargeInvoiceError(self._MAX_INVOICE_AMOUNT)
 
     @staticmethod
     def _truncate_to_two_decimals(number: float) -> float:
