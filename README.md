@@ -19,6 +19,14 @@ Write a python class, `InvoiceStats`, along with suitable tests, which supports 
 - Your code will be judged on scalability, clarity, readability, accuracy, test coverage, performance and robustness
 
 
+## Files
+
+- `errors.py`: user-defined errors to raise when facing invalid invoices
+- `invoice.py`: custom `Invoice` class to represent invoices
+- `invoice_stats.py`: implementation of the `InvoiceStats` class
+- `test_invoice_stats.py`: unit tests
+
+
 ## Test locally
 
 Every package used is from the standard library, to run the tests just launch (tested with python==3.7.2):
