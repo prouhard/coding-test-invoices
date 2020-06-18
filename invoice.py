@@ -50,6 +50,6 @@ class Invoice:
         # Check that the total invoice is less than the maximum allowed value
         if self.as_amount() >= self._MAX_INVOICE_AMOUNT:
             raise InvalidInvoiceError(
-                f"Invoices cannot be greate thant {self._MAX_INVOICE_AMOUNT}",
+                f"Invoices cannot be greater than {self._MAX_INVOICE_AMOUNT}",
                 code=3
             )
